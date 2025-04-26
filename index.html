@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thandiwe's Digital Quest: Journey Through the OSI Layers</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #4A42D6;
+            --secondary: #FF6584;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --dark: #121212;
+            --darker: #0A0A0A;
+            --light: #F5F5F5;
+            --lighter: #FFFFFF;
+            
+            --layer-colors: #FF6584, #FF9E7D, #FFD166, #06D6A0, #118AB2, #073B4C, #6C63FF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 101, 132, 0.1) 0%, transparent 20%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--light);
+            opacity: 0.8;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Main Game Area */
+        .game-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+            gap: 2rem;
+        }
+        
+        /* OSI Layers Navigation */
+        .osi-layers {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: sticky;
+            top: 100px;
+            align-self: flex-start;
+        }
+        
+        .layer-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+            background: linear-gradient(var(--dark), var(--dark)) padding-box,
+                        linear-gradient(135deg, var(--primary), var(--secondary)) border-box;
+        }
+        
+        .layer-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .layer-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.7);
+            border-color: var(--lighter);
+        }
+        
+        .layer-btn.completed {
+            background: linear-gradient(var(--dark), var(--dark)) padding-box,
+                        linear-gradient(135deg, var(--success), #2E7D32)) border-box;
+        }
+        
+        .layer-btn.completed::after {
+            content: '✓';
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background-color: var(--success);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        /* Game Content Area */
+        .game-content {
+            flex: 1;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .scene-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .scene-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .scene-title i {
+            font-size: 1.5rem;
+        }
+        
+        /*--------DIFFICULT LEVEL-------------*/
+        .difficulty-meter {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .difficulty-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-right: 5px;
+        }
+
+        .difficulty-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.2);
+            position: relative;
+        }
+
+        .difficulty-dot.active {
+            background-color: var(--warning);
+        }
+
+        /* Tooltip styling */
+        .difficulty-dot::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .difficulty-dot:hover::after {
+            opacity: 1;
+        }
+        
+        /* Narrative Section */
+        .narrative-container {
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary);
+            position: relative;
+        }
+        
+        .character-image {
+            width: 80px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            position: absolute;
+            top: -40px;
+            left: -40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .narrative-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-left: 50px;
+        }
+        
+        .narrative-text::first-letter {
+            font-size: 2rem;
+            color: var(--primary);
+            float: left;
+            line-height: 1;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+        
+        /* Choices Section */
+        .choices-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .choice-card {
+            background: rgba(50, 50, 50, 0.7);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .choice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+        
+        .choice-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .choice-text {
+            font-size: 1rem;
+        }
+        
+        /* Feedback Section */
+        .feedback-container {
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback-container.success {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 5px solid var(--success);
+        }
+        
+        .feedback-container.failure {
+            background: rgba(244, 67, 54, 0.2);
+            border-left: 5px solid var(--danger);
+        }
+        
+        .feedback-text {
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .feedback-decoration {
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .feedback-decoration.success {
+            color: var(--success);
+            right: 20px;
+            bottom: 10px;
+        }
+        
+        .feedback-decoration.failure {
+            color: var(--danger);
+            right: 20px;
+            bottom: 10px;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-btn i {
+            font-size: 1rem;
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+        }
+        
+        .retry-btn {
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+            display: none;
+        }
+        
+        .retry-btn:hover {
+            background: rgba(255, 193, 7, 0.3);
+        }
+        
+        .restart-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+        
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Layer Info Panel */
+        .layer-info {
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-top: 3px solid var(--primary);
+        }
+        
+        .layer-info-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .layer-description {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* OSI Visualization */
+        .osi-visualization {
+            width: 100%;
+            height: 200px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .osi-stack {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+            height: 90%;
+            position: relative;
+        }
+        
+        .osi-layer-visual {
+            flex: 1;
+            margin: 2px 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-weight: 600;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .osi-layer-visual::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        }
+        
+        .osi-layer-visual.active {
+            transform: scaleX(1.05);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .osi-layers {
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+                margin-bottom: 2rem;
+                position: static;
+            }
+            
+            .layer-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .choices-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .narrative-text {
+                margin-left: 0;
+            }
+            
+            .character-image {
+                position: static;
+                margin-bottom: 1rem;
+            }
+        }
+        
+        /* Special Effects */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            opacity: 0;
+            z-index: 100;
+        }
+        
+        /* Comic Strip Integration */
+        .comic-strip {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+            margin: 2rem 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--dark);
+        }
+        
+        .comic-strip::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .comic-strip::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        .comic-strip::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 20px;
+        }
+        
+        .comic-panel {
+            min-width: 250px;
+            background: rgba(50, 50, 50, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+        
+        .comic-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .comic-caption {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Achievement System */
+        .achievement-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.5s ease;
+        }
+        
+        .achievement-toast.show {
+            transform: translateX(0);
+        }
+        
+        .achievement-icon {
+            font-size: 1.5rem;
+            color: gold;
+        }
+        
+        /* 3D Effect for Game Area */
+        .game-content {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .game-content-inner {
+            transition: transform 0.5s ease;
+        }
+        
+        .game-content:hover .game-content-inner {
+            transform: rotateY(5deg) rotateX(2deg);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-globe-africa"></i>
+                    <span>THANDIWE'S QUEST</span>
+                </a>
+                
+                <div class="progress-container">
+                    <span class="progress-text">Connection Progress</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="game-container">
+            <!-- OSI Layers Navigation -->
+            <div class="osi-layers">
+                <div class="layer-btn" data-layer="7">
+                    <span>7</span>
+                </div>
+                <div class="layer-btn" data-layer="6">
+                    <span>6</span>
+                </div>
+                <div class="layer-btn" data-layer="5">
+                    <span>5</span>
+                </div>
+                <div class="layer-btn" data-layer="4">
+                    <span>4</span>
+                </div>
+                <div class="layer-btn" data-layer="3">
+                    <span>3</span>
+                </div>
+                <div class="layer-btn" data-layer="2">
+                    <span>2</span>
+                </div>
+                <div class="layer-btn" data-layer="1">
+                    <span>1</span>
+                </div>
+            </div>
+            
+            <!-- Main Game Content -->
+            <div class="game-content">
+                <div class="game-content-inner">
+                    <!-- OSI Visualization -->
+                    <div class="osi-visualization">
+                        <div class="osi-stack" id="osi-stack">
+                            <!-- Layers will be added dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Scene Header -->
+                    <div class="scene-header">
+                        <h2 class="scene-title">
+                            <i class="fas fa-layer-group"></i>
+                            <span id="scene-title">Welcome to Thandiwe's Digital Quest</span>
+                        </h2>
+                        <div class="difficulty-meter">
+                            <span class="difficulty-label">Difficulty:</span>
+                            <div class="difficulty-dot active" title="Very Easy"></div>
+                            <div class="difficulty-dot active" title="Easy"></div>
+                            <div class="difficulty-dot" title="Medium"></div>
+                            <div class="difficulty-dot" title="Hard"></div>
+                            <div class="difficulty-dot" title="Very Hard"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Narrative Section -->
+                    <div class="narrative-container">
+                        <img src="assets\images\1.png" alt="Thandiwe" class="character-image">
+                        <div class="narrative-text" id="narrative-text">
+                            Welcome to Thandiwe's Digital Quest! Help Thandiwe, a student from the remote village of Makhaya in South Africa, navigate through the 7 OSI layers to successfully connect to her online class and bridge the digital divide.
+                            <br><br>
+                            Thandiwe dreams of a better education, but the digital divide keeps her behind. With your help, she can overcome these challenges and access digital learning resources.
+                        </div>
+                    </div>
+                    
+                    <!-- Comic Strip Integration -->
+                    <div class="comic-strip" id="comic-strip">
+                        <!-- Comic panels will be added dynamically -->
+                    </div>
+                    
+                    <!-- Choices Section -->
+                    <div class="choices-container" id="choices-container">
+                        <button class="choice-card pulse" id="start-btn">
+                            <div class="choice-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="choice-text">
+                                Start Thandiwe's Journey
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Feedback Section -->
+                    <div class="feedback-container" id="feedback-container">
+                        <div class="feedback-text" id="feedback-text"></div>
+                        <div class="feedback-decoration" id="feedback-decoration">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="action-btn restart-btn" id="restart-btn">
+                            <i class="fas fa-redo"></i> Restart
+                        </button>
+                        <button class="action-btn retry-btn" id="retry-btn">
+                            <i class="fas fa-sync-alt"></i> Try Again
+                        </button>
+                        <button class="action-btn next-btn" id="next-btn">
+                            <i class="fas fa-arrow-right"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <!-- Layer Info Panel -->
+                    <div class="layer-info">
+                        <div class="layer-info-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span id="layer-info-title">The OSI Model</span>
+                        </div>
+                        <div class="layer-description" id="layer-description">
+                            The OSI (Open Systems Interconnection) model is a conceptual framework that standardizes the functions of a telecommunication or computing system into seven abstraction layers. Each layer serves a specific role in the network communication process.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Achievement Toast -->
+    <div class="achievement-toast" id="achievement-toast">
+        <div class="achievement-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div>
+            <div class="achievement-title">Achievement Unlocked!</div>
+            <div class="achievement-desc" id="achievement-desc">Layer Master</div>
+        </div>
+    </div>
+    
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+    
+    <!-- Game Script -->
+    <script>
+        // Game state
+        const gameState = {
+            currentLayer: 7, // Starting from Application Layer (7) down to Physical Layer (1)
+            completedLayers: [],
+            currentScene: 'intro',
+            progress: 0,
+            achievements: []
+        };
+        
+        // Layer information
+        const layers = {
+            7: {
+                name: "Application Layer",
+                description: "The Application Layer is the OSI layer closest to the end user. It provides network services directly to user applications. Examples include HTTP, FTP, SMTP, and application protocols like those used in video conferencing software.",
+                challenge: "Thandiwe needs to select the right application for her online class that will work well with limited internet connectivity.",
+                color: "#6C63FF",
+                icon: "fa-window-maximize"
+            },
+            6: {
+                name: "Presentation Layer",
+                description: "The Presentation Layer prepares data for the application layer. It's responsible for data translation, encryption, and compression. This layer ensures that data sent from one system can be read by the application layer of another.",
+                challenge: "Thandiwe's device needs to handle different file formats and compression to optimize for low bandwidth.",
+                color: "#118AB2",
+                icon: "fa-file-code"
+            },
+            5: {
+                name: "Session Layer",
+                description: "The Session Layer establishes, manages, and terminates connections between applications. It handles session setup, coordination, and termination, as well as authentication and reconnection if the network fails.",
+                challenge: "Thandiwe needs to maintain her class session despite connectivity issues.",
+                color: "#06D6A0",
+                icon: "fa-user-friends"
+            },
+            4: {
+                name: "Transport Layer",
+                description: "The Transport Layer provides reliable data transfer between end systems. It breaks data into segments, handles error control, flow control, and ensures complete data transfer. TCP and UDP are protocols at this layer.",
+                challenge: "Thandiwe's data needs to be properly segmented and delivered reliably to ensure she doesn't miss important parts of the lesson.",
+                color: "#FFD166",
+                icon: "fa-truck"
+            },
+            3: {
+                name: "Network Layer",
+                description: "The Network Layer handles packet forwarding and routing through intermediate routers. It finds the best physical path for data to travel across the network. IP addresses operate at this layer.",
+                challenge: "Thandiwe's data packets need to find the best path through the network to reach her online classroom servers.",
+                color: "#FF9E7D",
+                icon: "fa-network-wired"
+            },
+            2: {
+                name: "Data Link Layer",
+                description: "The Data Link Layer provides node-to-node data transfer between two directly connected nodes. It detects and possibly corrects errors from the Physical Layer. It includes MAC addressing and protocols like Ethernet.",
+                challenge: "Thandiwe's device needs to establish a reliable link to her local network equipment.",
+                color: "#FF6584",
+                icon: "fa-ethernet"
+            },
+            1: {
+                name: "Physical Layer",
+                description: "The Physical Layer consists of the physical and electrical specifications of the data connection. It transmits raw bit streams over a physical medium. This includes cables, wireless signals, network cards, and other hardware components.",
+                challenge: "Thandiwe needs to establish a stable physical connection with adequate signal strength.",
+                color: "#073B4C",
+                icon: "fa-wifi"
+            }
+        };
+        
+        const comicPanels = {
+            intro: [
+                {
+                    title: "The Struggle",
+                    image: "https://images.unsplash.com/photo-1551241681-2aae145af5df?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fFNvdXRoJTIwQWZyaWNhbiUyMHJ1cmFsJTIwc3R1ZGVudCUyMGVkdWNhdGlvbiUyMGluJTIwY2xhc3N8ZW58MHx8MHx8fDA%3D",
+                    text: "Thandiwe dreams of a better education but the digital divide keeps her behind."
+                },
+                {
+                    title: "Teacher's Concern",
+                    image: "https://images.unsplash.com/flagged/photo-1579133311477-9121405c78dd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fFNvdXRoJTIwQWZyaWNhbiUyMHJ1cmFsJTIwc3R1ZGVudCUyMGVkdWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D",
+                    text: "These students are so eager to learn, but without proper internet and devices, how can they keep up?"
+                }
+            ],
+            7: [
+                {
+                    title: "Application Challenge",
+                    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Thandiwe tries to access her online class but struggles with the application."
+                }
+            ],
+            6: [
+                {
+                    title: "Format Issues",
+                    image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "The learning materials aren't optimized for Thandiwe's device."
+                }
+            ],
+            5: [
+                {
+                    title: "Connection Drops",
+                    image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Thandiwe's internet connection keeps dropping during class."
+                }
+            ],
+            4: [
+                {
+                    title: "Data Transfer",
+                    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Important parts of the lesson are missing due to unreliable data transfer."
+                }
+            ],
+            3: [
+                {
+                    title: "Routing Problems",
+                    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Data packets take inefficient routes, slowing down Thandiwe's connection."
+                }
+            ],
+            2: [
+                {
+                    title: "Local Network",
+                    image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Errors occur as data moves between Thandiwe's device and the local network."
+                }
+            ],
+            1: [
+                {
+                    title: "Physical Connection",
+                    image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Thandiwe struggles to get a stable physical connection to the internet."
+                }
+            ],
+            complete: [
+                {
+                    title: "Success!",
+                    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "Thandiwe successfully connects to her online class thanks to your help!"
+                },
+                {
+                    title: "Community Impact",
+                    image: "https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    text: "This project is just the beginning. Soon, every community in the Eastern Cape will have digital learning access!"
+                }
+            ]
+        };
+        
+        // Game scenarios for each layer
+        const scenarios = {
+            7: { // Application Layer
+                narrative: "Thandiwe is ready to join her online class but needs to choose which application to use. The internet connection in her village is limited and sometimes unstable. What should she do?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-video'></i> Use high-quality video conferencing app (Zoom with video enabled)",
+                        result: "failure",
+                        feedback: "The high bandwidth requirements of video conferencing quickly overwhelm Thandiwe's limited connection. The call keeps freezing and eventually drops. The application layer couldn't handle the data efficiently for her network conditions."
+                    },
+                    {
+                        text: "<i class='fas fa-microphone'></i> Use audio-only mode in a conferencing app",
+                        result: "success",
+                        feedback: "Good choice! By using audio-only mode, Thandiwe can still participate in her class while using much less bandwidth. The application layer efficiently serves her needs within the network constraints."
+                    },
+                    {
+                        text: "<i class='fas fa-download'></i> Download class materials beforehand and participate via text chat",
+                        result: "success",
+                        feedback: "Excellent strategy! By downloading materials ahead of time and using text chat for communication, Thandiwe minimizes real-time data needs. The application layer is handling the most appropriate protocols for her situation."
+                    }
+                ]
+            },
+            6: { // Presentation Layer
+                narrative: "Thandiwe's learning materials contain various types of content. Her device needs to handle these efficiently to save bandwidth and storage. What's the best approach?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-file-image'></i> Download all materials in their original high-resolution formats",
+                        result: "failure",
+                        feedback: "The uncompressed files are too large for Thandiwe's connection and device storage. The presentation layer failed to optimize the data formats for her constraints."
+                    },
+                    {
+                        text: "<i class='fas fa-file-archive'></i> Request compressed versions of all files",
+                        result: "success",
+                        feedback: "Good choice! The presentation layer properly compresses the data, making it much faster to download while still maintaining usability."
+                    },
+                    {
+                        text: "<i class='fas fa-file-alt'></i> Convert video content to audio-only and images to lower resolution",
+                        result: "success",
+                        feedback: "Excellent! The presentation layer translates the content into more appropriate formats, significantly reducing data needs while preserving the essential information."
+                    }
+                ]
+            },
+            5: { // Session Layer
+                narrative: "Thandiwe's internet connection occasionally drops. How should her system handle the session with the learning platform?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-plug'></i> Set up automatic reconnection with session persistence",
+                        result: "success",
+                        feedback: "Perfect! The session layer maintains information about Thandiwe's connection and can automatically resume where she left off when the connection returns."
+                    },
+                    {
+                        text: "<i class='fas fa-power-off'></i> Manually reconnect and restart the session each time",
+                        result: "failure",
+                        feedback: "Thandiwe gets frustrated as she has to log in repeatedly and loses her place in the lesson each time. The session layer isn't being used effectively to maintain continuity."
+                    },
+                    {
+                        text: "<i class='fas fa-save'></i> Implement checkpoints to resume downloads",
+                        result: "success",
+                        feedback: "Good thinking! The session layer keeps track of what's been downloaded, allowing Thandiwe to resume from where she left off rather than starting over each time the connection drops."
+                    }
+                ]
+            },
+            4: { // Transport Layer
+                narrative: "Thandiwe's learning platform needs to send various types of data. How should the transport layer handle this data?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-shield-alt'></i> Use TCP for everything to ensure reliability",
+                        result: "failure",
+                        feedback: "While reliable, using TCP for everything creates unnecessary overhead for real-time components like video chat. Thandiwe's connection struggles with the constant acknowledgments and retransmissions."
+                    },
+                    {
+                        text: "<i class='fas fa-bolt'></i> Use UDP for everything to maximize speed",
+                        result: "failure",
+                        feedback: "Using UDP for everything means Thandiwe frequently misses important parts of the lecture materials and assignments. Critical data needs reliability that UDP doesn't provide."
+                    },
+                    {
+                        text: "<i class='fas fa-exchange-alt'></i> Use TCP for course materials and UDP for real-time communication",
+                        result: "success",
+                        feedback: "Perfect balance! TCP ensures Thandiwe gets complete course materials without corruption, while UDP allows for faster real-time communication even on her limited connection."
+                    }
+                ]
+            },
+            3: { // Network Layer
+                narrative: "Thandiwe's data needs to travel across multiple networks to reach her school's servers. How should routing be handled?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-route'></i> Use static routing to her school's server",
+                        result: "failure",
+                        feedback: "The static route becomes congested during peak hours, and Thandiwe's data packets get delayed or lost. The network layer isn't adapting to changing network conditions."
+                    },
+                    {
+                        text: "<i class='fas fa-random'></i> Implement dynamic routing to find the best path",
+                        result: "success",
+                        feedback: "Good choice! Dynamic routing allows the network layer to adapt to changing network conditions, finding the least congested path for Thandiwe's data."
+                    },
+                    {
+                        text: "<i class='fas fa-server'></i> Connect through a local CDN (Content Delivery Network) node",
+                        result: "success",
+                        feedback: "Excellent strategy! The network layer routes Thandiwe's requests to a nearby CDN node, significantly reducing the distance data needs to travel and improving her connection quality."
+                    }
+                ]
+            },
+            2: { // Data Link Layer
+                narrative: "Thandiwe's device needs to communicate with her local network equipment. How should the data link layer be configured?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-tachometer-alt'></i> Configure for maximum throughput without error checking",
+                        result: "failure",
+                        feedback: "Without proper error detection, data becomes corrupted during transfer due to local interference. Thandiwe receives garbled information and misses key concepts."
+                    },
+                    {
+                        text: "<i class='fas fa-check-circle'></i> Use strong error detection and correction",
+                        result: "success",
+                        feedback: "Good choice! The data link layer catches and corrects errors caused by local interference, ensuring Thandiwe receives accurate information even when conditions aren't ideal."
+                    },
+                    {
+                        text: "<i class='fas fa-sliders-h'></i> Implement adaptive error correction based on signal quality",
+                        result: "success",
+                        feedback: "Excellent! The data link layer dynamically adjusts its error correction strength based on current conditions, optimizing both reliability and efficiency for Thandiwe's connection."
+                    }
+                ]
+            },
+            1: { // Physical Layer
+                narrative: "Thandiwe needs a stable physical connection to access her online class. What should she do?",
+                choices: [
+                    {
+                        text: "<i class='fas fa-mobile-alt'></i> Use her phone's cellular data indoors",
+                        result: "failure",
+                        feedback: "The cellular signal is too weak inside Thandiwe's home, causing frequent disconnections. The physical layer can't maintain a stable bit transmission."
+                    },
+                    {
+                        text: "<i class='fas fa-wifi'></i> Connect to the community Wi-Fi from inside her home",
+                        result: "failure",
+                        feedback: "The community Wi-Fi signal barely reaches Thandiwe's home, resulting in a weak and unstable connection. The physical layer struggles with maintaining consistent signal strength."
+                    },
+                    {
+                        text: "<i class='fas fa-mountain'></i> Walk to a nearby hill for better cellular reception",
+                        result: "success",
+                        feedback: "Good solution! By finding a location with stronger signal, Thandiwe ensures the physical layer has adequate signal strength to maintain a stable connection throughout her class."
+                    }
+                ]
+            },
+            complete: {
+                narrative: "Congratulations! Thandiwe has successfully navigated all seven OSI layers and established a stable connection to her online class. Thanks to your help, she can now access her education reliably despite living in a remote area with limited connectivity.\n\nBy making smart choices at each layer of the networking stack, you've helped bridge the digital divide and ensured that Thandiwe doesn't miss out on learning opportunities.\n\nThe government is now implementing zero-rated educational platforms and community Wi-Fi zones, ensuring more students like Thandiwe can access digital education!",
+                choices: []
+            }
+        };
+        
+        // Achievements
+        const achievements = {
+            7: {
+                title: "Application Ace",
+                description: "Helped Thandiwe choose the right applications for her limited connection"
+            },
+            6: {
+                title: "Presentation Pro",
+                description: "Optimized content formats for Thandiwe's device"
+            },
+            5: {
+                title: "Session Saver",
+                description: "Maintained Thandiwe's learning session despite connectivity issues"
+            },
+            4: {
+                title: "Transport Tactician",
+                description: "Selected the perfect transport protocols for Thandiwe's needs"
+            },
+            3: {
+                title: "Network Navigator",
+                description: "Found the best routes for Thandiwe's data packets"
+            },
+            2: {
+                title: "Data Link Defender",
+                description: "Ensured reliable local network connections for Thandiwe"
+            },
+            1: {
+                title: "Physical Pioneer",
+                description: "Established a stable physical connection for Thandiwe"
+            },
+            complete: {
+                title: "Digital Divide Conqueror",
+                description: "Helped Thandiwe overcome all networking challenges to access her education"
+            }
+        };
+        
+        // DOM Elements
+        const narrativeEl = document.getElementById('narrative-text');
+        const choicesEl = document.getElementById('choices-container');
+        const feedbackEl = document.getElementById('feedback-container');
+        const feedbackText = document.getElementById('feedback-text');
+        const feedbackDecoration = document.getElementById('feedback-decoration');
+        const nextBtn = document.getElementById('next-btn');
+        const retryBtn = document.getElementById('retry-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const startBtn = document.getElementById('start-btn');
+        const layerBtns = document.querySelectorAll('.layer-btn');
+        const layerDescription = document.getElementById('layer-description');
+        const currentLayerTitle = document.getElementById('layer-info-title');
+        const sceneTitle = document.getElementById('scene-title');
+        const progressFill = document.getElementById('progress-fill');
+        const osiStack = document.getElementById('osi-stack');
+        const comicStrip = document.getElementById('comic-strip');
+        const achievementToast = document.getElementById('achievement-toast');
+        const achievementDesc = document.getElementById('achievement-desc');
+        const confettiContainer = document.getElementById('confetti-container');
+        
+        // Initialize the OSI stack visualization
+        function initOSIStack() {
+            osiStack.innerHTML = '';
+            
+            // Create layers from 7 to 1
+            for (let i = 7; i >= 1; i--) {
+                const layer = document.createElement('div');
+                layer.className = 'osi-layer-visual';
+                layer.style.backgroundColor = layers[i].color;
+                layer.textContent = `${i}: ${layers[i].name}`;
+                layer.dataset.layer = i;
+                
+                if (i === gameState.currentLayer) {
+                    layer.classList.add('active');
+                }
+                
+                osiStack.appendChild(layer);
+            }
+        }
+        
+        // Update the OSI stack visualization
+        function updateOSIStack() {
+            const layerElements = osiStack.querySelectorAll('.osi-layer-visual');
+            
+            layerElements.forEach(layerEl => {
+                const layerNum = parseInt(layerEl.dataset.layer);
+                layerEl.classList.remove('active');
+                
+                if (layerNum === gameState.currentLayer) {
+                    layerEl.classList.add('active');
+                }
+            });
+        }
+        
+        // Load comic strip panels for the current scene
+        function loadComicPanels(sceneId) {
+            comicStrip.innerHTML = '';
+            
+            const panels = comicPanels[sceneId] || comicPanels.intro;
+            
+            panels.forEach(panel => {
+                const panelEl = document.createElement('div');
+                panelEl.className = 'comic-panel';
+                
+                panelEl.innerHTML = `
+                    <img src="${panel.image}" alt="${panel.title}" class="comic-image">
+                    <div class="comic-caption">
+                        <strong>${panel.title}</strong><br>
+                        ${panel.text}
+                    </div>
+                `;
+                
+                comicStrip.appendChild(panelEl);
+            });
+        }
+        
+        // Show achievement
+        function showAchievement(layerNum) {
+            const achievement = achievements[layerNum] || achievements.complete;
+            
+            achievementDesc.textContent = achievement.title;
+            achievementToast.classList.add('show');
+            
+            setTimeout(() => {
+                achievementToast.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            confettiContainer.innerHTML = '';
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = `${Math.random() * -100}px`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.opacity = Math.random();
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                const animationDuration = Math.random() * 3 + 2;
+                confetti.style.animation = `fall ${animationDuration}s linear forwards`;
+                
+                confettiContainer.appendChild(confetti);
+            }
+            
+            // Add CSS for falling animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Update layer buttons
+        function updateLayerButtons() {
+            layerBtns.forEach(btn => {
+                const layerNum = parseInt(btn.dataset.layer);
+                btn.classList.remove('active', 'completed');
+                
+                if (layerNum === gameState.currentLayer) {
+                    btn.classList.add('active');
+                } else if (gameState.completedLayers.includes(layerNum)) {
+                    btn.classList.add('completed');
+                }
+            });
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const totalLayers = 7;
+            const completedCount = gameState.completedLayers.length;
+            const progressPercentage = (completedCount / totalLayers) * 100;
+            
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Add celebration when completing all layers
+            if (completedCount === totalLayers) {
+                progressFill.style.background = 'linear-gradient(90deg, var(--primary), gold)';
+                createConfetti();
+            }
+        }
+        
+        // Start the game
+        function startGame() {
+            gameState.currentScene = gameState.currentLayer;
+            updateLayerButtons();
+            updateOSIStack();
+            loadScene(gameState.currentLayer);
+            updateProgress();
+            
+            // Animate start button
+            startBtn.classList.remove('pulse');
+            startBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                startBtn.style.transform = 'scale(1)';
+            }, 200);
+        }
+        
+        // Load a specific scene/layer
+        function loadScene(sceneId) {
+            // Hide buttons that might be visible
+            nextBtn.style.display = 'none';
+            retryBtn.style.display = 'none';
+            feedbackEl.style.display = 'none';
+            
+            const scene = scenarios[sceneId];
+            if (!scene) return;
+            
+            // Update narrative
+            narrativeEl.innerHTML = scene.narrative;
+            
+            // Update scene title
+            if (layers[sceneId]) {
+                sceneTitle.textContent = `Layer ${sceneId}: ${layers[sceneId].name}`;
+            } else {
+                sceneTitle.textContent = "Quest Complete!";
+            }
+            
+            // Update layer information
+            if (layers[sceneId]) {
+                currentLayerTitle.textContent = layers[sceneId].name;
+                layerDescription.textContent = `${layers[sceneId].description} ${layers[sceneId].challenge}`;
+            } else {
+                currentLayerTitle.textContent = "Mission Accomplished!";
+                layerDescription.textContent = "You've helped Thandiwe navigate through all seven layers of the OSI model and successfully connect to her online class!";
+            }
+            
+            // Load comic panels
+            loadComicPanels(sceneId);
+            
+            // Populate choices
+            populateChoices(scene);
+        }
+        
+        // Populate choices
+        function populateChoices(scene) {
+            choicesEl.innerHTML = '';
+            
+            scene.choices.forEach((choice, index) => {
+                const button = document.createElement('div');
+                button.className = 'choice-card';
+                button.innerHTML = choice.text;
+                
+                button.addEventListener('click', () => {
+                    // Animate button click
+                    button.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1)';
+                        makeChoice(index);
+                    }, 200);
+                });
+                
+                choicesEl.appendChild(button);
+            });
+            
+            // For the completion scene
+            if (gameState.currentScene === 'complete') {
+                const button = document.createElement('div');
+                button.className = 'choice-card pulse';
+                button.innerHTML = '<i class="fas fa-redo"></i> Play Again';
+                button.addEventListener('click', restartGame);
+                choicesEl.appendChild(button);
+            }
+        }
+        
+        // Process player choice
+        function makeChoice(choiceIndex) {
+            const scene = scenarios[gameState.currentScene];
+            const choice = scene.choices[choiceIndex];
+            
+            // Display feedback
+            feedbackText.innerHTML = choice.feedback;
+            feedbackEl.className = 'feedback-container ' + choice.result;
+            feedbackDecoration.className = 'feedback-decoration ' + choice.result;
+            
+            if (choice.result === 'success') {
+                feedbackDecoration.innerHTML = '<i class="fas fa-check-circle"></i>';
+                feedbackEl.style.display = 'block';
+                
+                // Show next button for success
+                nextBtn.style.display = 'flex';
+                gameState.completedLayers.push(gameState.currentLayer);
+                
+                // Show achievement
+                showAchievement(gameState.currentLayer);
+            } else {
+                feedbackDecoration.innerHTML = '<i class="fas fa-times-circle"></i>';
+                feedbackEl.style.display = 'block';
+                
+                // Show retry button for failure
+                retryBtn.style.display = 'flex';
+            }
+            
+            // Hide choices
+            choicesEl.innerHTML = '';
+            
+            updateProgress();
+            updateLayerButtons();
+        }
+        
+        // Move to next layer
+        function moveToNextLayer() {
+            // Animate the next button
+            nextBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                nextBtn.style.transform = 'scale(1)';
+            }, 200);
+            
+            gameState.currentLayer -= 1; // Move down the OSI stack
+            
+            if (gameState.currentLayer < 1) {
+                // Game complete
+                gameState.currentScene = 'complete';
+            } else {
+                gameState.currentScene = gameState.currentLayer;
+            }
+            
+            updateLayerButtons();
+            updateOSIStack();
+            loadScene(gameState.currentScene);
+            updateProgress();
+        }
+        
+        // Retry current layer
+        function retryCurrentLayer() {
+            // Animate the retry button
+            retryBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                retryBtn.style.transform = 'scale(1)';
+            }, 200);
+            
+            loadScene(gameState.currentLayer);
+        }
+        
+        // Restart the game
+        function restartGame() {
+            // Animate the restart button
+            restartBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                restartBtn.style.transform = 'scale(1)';
+            }, 200);
+            
+            gameState.currentLayer = 7;
+            gameState.completedLayers = [];
+            gameState.currentScene = gameState.currentLayer;
+            updateLayerButtons();
+            updateOSIStack();
+            loadScene(gameState.currentLayer);
+            updateProgress();
+        }
+        
+        // Event Listeners
+        startBtn.addEventListener('click', startGame);
+        nextBtn.addEventListener('click', moveToNextLayer);
+        retryBtn.addEventListener('click', retryCurrentLayer);
+        restartBtn.addEventListener('click', restartGame);
+        
+        // Layer button click handlers
+        layerBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const layerNum = parseInt(this.dataset.layer);
+                
+                // Only allow navigation to completed layers or current layer
+                if (gameState.completedLayers.includes(layerNum) || layerNum === gameState.currentLayer) {
+                    gameState.currentLayer = layerNum;
+                    gameState.currentScene = layerNum;
+                    updateLayerButtons();
+                    updateOSIStack();
+                    loadScene(gameState.currentScene);
+                }
+            });
+        });
+        
+        // Initialize the game
+        initOSIStack();
+        loadComicPanels('intro');
+    </script>
+</body>
+</html>
+
